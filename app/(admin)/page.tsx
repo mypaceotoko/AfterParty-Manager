@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Users, UserCheck, UserX, Clock, AlertCircle, CalendarHeart } from "lucide-react";
 import Link from "next/link";
 import { EventEditForm } from "@/components/dashboard/EventEditForm";
+import { EventCreateForm } from "@/components/dashboard/EventCreateForm";
 
 async function getDashboardData() {
   try {
@@ -82,13 +83,8 @@ export default async function DashboardPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <CalendarHeart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground text-lg mb-2">イベントが登録されていません</p>
-            <p className="text-sm text-muted-foreground">
-              データベースのシードを実行してサンプルデータを追加してください
-            </p>
-            <code className="mt-4 block text-xs bg-muted p-2 rounded">
-              npx prisma db seed
-            </code>
+            <p className="text-muted-foreground text-lg mb-3">まずイベントを登録してください</p>
+            <EventCreateForm />
           </CardContent>
         </Card>
       </div>
