@@ -3,6 +3,12 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+// Production (Vercel) uses TURSO_DATABASE_URL, local dev uses DATABASE_URL
+const dbUrl =
+  process.env["TURSO_DATABASE_URL"] ??
+  process.env["DATABASE_URL"] ??
+  "file:./prisma/dev.db";
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -10,6 +16,6 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: dbUrl,
   },
 });
