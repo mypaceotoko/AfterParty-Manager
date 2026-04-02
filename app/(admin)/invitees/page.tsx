@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { InviteeList } from "@/components/invitees/InviteeList";
 import { Users } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 async function getInvitees() {
   const event = await prisma.event.findFirst({ orderBy: { createdAt: "asc" } });
   if (!event) return { event: null, invitees: [] };

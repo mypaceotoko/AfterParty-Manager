@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 import { INVITEE_STATUS, type InviteeStatusKey } from "@/lib/constants";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
