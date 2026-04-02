@@ -135,6 +135,43 @@ npm run db:studio    # Prisma Studio（DBブラウザ）起動
     └── index.ts          # 型定義
 ```
 
+## 🌐 Vercel へのデプロイ（無料で公開URL取得）
+
+### Step 1: Turso でDBを作成（無料）
+
+1. [https://turso.tech](https://turso.tech) でアカウント作成
+2. ダッシュボードから「Create Database」→ 名前を入力（例: `afterparty-db`）
+3. 作成後、「Generate Token」でトークンを取得
+4. 以下の2つの値をメモ：
+   - `Database URL` → `libsql://afterparty-db-xxxxxxx.turso.io`
+   - `Auth Token` → `eyJhbGciOiJFZERTQSJ9...`
+
+### Step 2: Vercel にデプロイ（無料）
+
+1. [https://vercel.com](https://vercel.com) でアカウント作成（GitHubでログイン）
+2. 「Add New Project」→ `afterparty-manager` リポジトリを選択
+3. 「Environment Variables」に以下を追加：
+
+| 変数名 | 値 |
+|--------|-----|
+| `TURSO_DATABASE_URL` | `libsql://your-db.turso.io` |
+| `TURSO_AUTH_TOKEN` | Tursoのトークン |
+| `ANTHROPIC_API_KEY` | （任意）Claude APIキー |
+
+4. 「Deploy」ボタンを押す
+5. デプロイ完了後、`https://your-app.vercel.app` でアクセス可能 🎉
+
+### Step 3: 初期データの投入
+
+デプロイ後、ローカルから本番DBにシードを流す：
+
+```bash
+# .env に本番のTurso URLを設定してから
+TURSO_DATABASE_URL="libsql://..." TURSO_AUTH_TOKEN="..." npx tsx prisma/seed.ts
+```
+
+---
+
 ## ライセンス
 
 MIT
