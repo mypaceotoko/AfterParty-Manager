@@ -48,3 +48,7 @@ prisma/*.db-journal
 
 # Keep .env.example
 !.env.example
+
+# Root-level SQLite dev database
+dev.db
+dev.db-journal
