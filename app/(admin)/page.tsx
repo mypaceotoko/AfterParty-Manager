@@ -10,14 +10,15 @@ import Link from "next/link";
 import { EventEditForm } from "@/components/dashboard/EventEditForm";
 
 async function getDashboardData() {
-  const event = await prisma.event.findFirst({ orderBy: { createdAt: "asc" } });
-  if (!event) return null;
+  try {
+    const event = await prisma.event.findFirst({ orderBy: { createdAt: "asc" } });
+    if (!event) return null;
 
-  const invitees = await prisma.invitee.findMany({
-    where: { eventId: event.id },
-    include: { rsvpResponses: { orderBy: { respondedAt: "desc" }, take: 1 } },
-    orderBy: { updatedAt: "desc" },
-  });
+    const invitees = await prisma.invitee.findMany({
+      where: { eventId: event.id },
+      include: { rsvpResponses: { orderBy: { respondedAt: "desc" }, take: 1 } },
+      orderBy: { updatedAt: "desc" },
+    });
 
   const stats = {
     total: invitees.length,
@@ -37,11 +38,39 @@ async function getDashboardData() {
     .filter((i) => i.lastContactedAt)
     .slice(0, 5);
 
-  return { event, stats, unreplied, recentActivity };
+    return { event, stats, unreplied, recentActivity };
+  } catch (error) {
+    console.error("DB connection error:", error);
+    return "DB_ERROR" as const;
+  }
 }
 
 export default async function DashboardPage() {
   const data = await getDashboardData();
+
+  if (data === "DB_ERROR") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <CalendarHeart className="h-7 w-7 text-rose-500" />
+          <h1 className="text-2xl font-bold">ダッシュボード</h1>
+        </div>
+        <Card className="border-red-200 dark:border-red-900">
+          <CardContent className="py-12 text-center">
+            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+            <p className="text-lg font-medium mb-2">データベースに接続できません</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Vercelの環境変数 <code className="bg-muted px-1 rounded">TURSO_DATABASE_URL</code> と{" "}
+              <code className="bg-muted px-1 rounded">TURSO_AUTH_TOKEN</code> が正しく設定されているか確認してください。
+            </p>
+            <p className="text-xs text-muted-foreground">
+              設定後はVercelで再デプロイが必要です。
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
