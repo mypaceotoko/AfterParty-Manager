@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  title     String
+  date      String
+  time      String
+  location  String
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invitees Invitee[]
+}
+
+model Invitee {
+  id              String    @id @default(cuid())
+  eventId         String
+  name            String
+  contact         String?
+  relation        String?
+  status          String    @default("NOT_CONTACTED")
+  memo            String?
+  inviteToken     String    @unique @default(cuid())
+  lastContactedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  event         Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  rsvpResponses RSVPResponse[]
+  messageDrafts MessageDraft[]
+}
+
+model RSVPResponse {
+  id             String   @id @default(cuid())
+  inviteeId      String
+  responseStatus String
+  comment        String?
+  respondedAt    DateTime @default(now())
+
+  invitee Invitee @relation(fields: [inviteeId], references: [id], onDelete: Cascade)
+}
+
+model MessageDraft {
+  id        String   @id @default(cuid())
+  inviteeId String?
+  purpose   String
+  tone      String
+  content   String
+  createdAt DateTime @default(now())
+
+  invitee Invitee? @relation(fields: [inviteeId], references: [id], onDelete: SetNull)
+}
