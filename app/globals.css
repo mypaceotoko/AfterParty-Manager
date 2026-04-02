@@ -75,8 +75,28 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, Arial, sans-serif;
+  /* Safari: prevent bounce scrolling on body */
+  overscroll-behavior: none;
 }
 
 * {
   border-color: var(--border);
+  /* Safari: prevent tap highlight flicker */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safari: prevent input zoom (font-size must be >= 16px) */
+input, textarea, select {
+  font-size: max(16px, 1em);
+}
+
+/* Safe area utility */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 4rem);
 }
